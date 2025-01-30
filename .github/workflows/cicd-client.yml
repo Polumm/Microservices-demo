@@ -31,8 +31,9 @@ jobs:
       - name: Build and Push Client
         run: |
           cd book-client
-          docker buildx build --platform linux/amd64 -t ghcr.io/$GHCR_USER/book-client:latest .
-          docker push ghcr.io/$GHCR_USER/book-client:latest
+          REPO_NAME=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
+          docker buildx build --platform linux/amd64 -t ghcr.io/$REPO_NAME/book-client:latest .
+          docker push ghcr.io/$REPO_NAME/book-client:latest
 
   deploy-client:
     runs-on: ubuntu-latest
@@ -45,8 +46,9 @@ jobs:
 
       - name: Deploy Client to Azure
         run: |
+          REPO_NAME=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
           az container create --resource-group myResourceGroup --name book-client \
-            --image ghcr.io/$GHCR_USER/book-client:latest --cpu 1 --memory 1 \
-            --registry-login-server ghcr.io --registry-username $GHCR_USER --registry-password ${{ secrets.PAT }} \
+            --image ghcr.io/$REPO_NAME/book-client:latest --cpu 1 --memory 1 \
+            --registry-login-server ghcr.io --registry-username $REPO_NAME --registry-password ${{ secrets.PAT }} \
             --dns-name-label book-client --ports 5001 \
             --environment-variables BOOK_API_URL="http://book-api-server:5000/books/search"

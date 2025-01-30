@@ -31,8 +31,9 @@ jobs:
       - name: Build and Push API Server
         run: |
           cd book-api-server
-          docker buildx build --platform linux/amd64 -t ghcr.io/$GHCR_USER/book-api-server:latest .
-          docker push ghcr.io/$GHCR_USER/book-api-server:latest
+          REPO_NAME=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
+          docker buildx build --platform linux/amd64 -t ghcr.io/$REPO_NAME/book-api-server:latest .
+          docker push ghcr.io/$REPO_NAME/book-api-server:latest
 
   deploy-api:
     runs-on: ubuntu-latest
@@ -45,7 +46,8 @@ jobs:
 
       - name: Deploy API Server to Azure
         run: |
+          REPO_NAME=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
           az container create --resource-group myResourceGroup --name book-api-server \
-            --image ghcr.io/$GHCR_USER/book-api-server:latest --cpu 1 --memory 1 \
+            --image ghcr.io/$REPO_NAME/book-api-server:latest --cpu 1 --memory 1 \
             --registry-login-server ghcr.io --registry-username $GHCR_USER --registry-password ${{ secrets.PAT }} \
             --dns-name-label book-api-server --ports 5000
