@@ -28,8 +28,8 @@ def search_books():
         response = requests.get(f"{BOOK_API_URL}?genre={genre}")
         if response.status_code == 200:
             books = response.json()
-            if books:  # Instead of expecting at least 3 books, return the first available one
-                return jsonify(books[0])  # Return the first matching book
+            if books:  # Return the first matching book
+                return jsonify(books[0])
             return jsonify({"error": "No books found in this genre"}), 404
         else:
             return jsonify(

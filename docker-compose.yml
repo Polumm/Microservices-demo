@@ -1,5 +1,6 @@
 version: "3.8"
 
+# Run two services together.
 services:
   book-api-server:
     build: ./book-api-server
