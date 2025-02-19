@@ -49,6 +49,7 @@ jobs:
           username: ${{ secrets.SERVER_USERNAME }}
           key: ${{ secrets.SERVER_KEY }}
           script: |
+            echo "🔹 Stopping existing container (if running)..."
             docker stop book-api-server || true  
             docker rm book-api-server || true   
             docker pull ghcr.io/${{ github.repository_owner }}/book-api-server:latest
